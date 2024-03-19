@@ -1,6 +1,6 @@
 <template>
   <HeaderVue />
-  <main>
+  <main class="special-main">
     <div class="container">
       <div class="top">
         <h1 class="title">Журнал</h1>
@@ -385,7 +385,7 @@ td {
 /*  */
 /*  */
 /*  */
-main {
+.special-main {
   background: #f3f6fb;
   padding-top: 65px;
   height: calc(100vh - 140px);

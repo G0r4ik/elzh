@@ -1,6 +1,6 @@
 <template>
   <HeaderVue />
-  <main>
+  <main class="special-main">
     <div class="container">
       <div class="top">
         <h1 class="title">Журнал</h1>
