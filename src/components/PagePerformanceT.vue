@@ -664,11 +664,6 @@ td {
 /*  */
 /*  */
 /*  */
-main {
-  background: #f3f6fb;
-  padding-top: 65px;
-  height: calc(100vh - 140px);
-}
 .title {
   color: #143987;
   font-size: 48px;
