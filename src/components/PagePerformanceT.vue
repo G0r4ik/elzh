@@ -14,40 +14,42 @@
           v-model="currentGroup" />
       </div>
     </div>
-    <div class="content">
-      <table class="table">
-        <tr>
-          <td class="inv"></td>
-          <td class="f" colspan="30">Ноябрь</td>
-          <td class="b" rowspan="2">Посещ. пар</td>
-        </tr>
-        <tr>
-          <td class="inv"></td>
-          <td :key="i" v-for="i of 30">{{ i }}</td>
-        </tr>
-        <tr :key="student.id" v-for="student of students">
-          <td class="l-none">{{ student.fio }}</td>
-          <td
-            class="mark"
-            :class="{
-              // td_good: Math.random() > 0.5,
-              // td_med: Math.random() < 0.5,
-              td_ok: mark === 'б',
-              td_bad: mark == 'н',
-            }"
-            :key="student.id"
-            v-for="mark of student.marks">
-            {{ mark }}
-          </td>
-          <td
-            :class="{
-              td_good: Math.random() > 0.5,
-              td_med: Math.random() < 0.5,
-            }">
-            {{ Math.floor(Math.random() * 30) }} /30
-          </td>
-        </tr>
-      </table>
+    <div class="wrapper">
+      <div class="content">
+        <table class="table">
+          <tr>
+            <td class="inv"></td>
+            <td class="f" colspan="30">Ноябрь</td>
+            <td class="b" rowspan="2">Посещ. пар</td>
+          </tr>
+          <tr class="table__head">
+            <td class="inv"></td>
+            <td class="table__date" :key="i" v-for="i of 30">{{ i }}</td>
+          </tr>
+          <tr :key="student.id" v-for="student of students">
+            <td class="table__fio">{{ student.fio }}</td>
+            <td
+              class="mark"
+              :class="{
+                // td_good: Math.random() > 0.5,
+                // td_med: Math.random() < 0.5,
+                td_ok: mark === 'б',
+                td_bad: mark == 'н',
+              }"
+              :key="student.id"
+              v-for="mark of student.marks">
+              <input class="table__mark-input" type="text" :value="mark" />
+            </td>
+            <td
+              :class="{
+                td_good: Math.random() > 0.5,
+                td_med: Math.random() < 0.5,
+              }">
+              {{ Math.floor(Math.random() * 30) }} /30
+            </td>
+          </tr>
+        </table>
+      </div>
     </div>
   </main>
 </template>
@@ -603,51 +605,44 @@ export default {
 </script>
 
 <style>
-table {
+.table {
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
-  /* border-spacing: 0; */
+  width: 100%;
+  border-collapse: collapse;
 }
 .mark:nth-child(2n) {
   background: #f3f6fb;
 }
-.content {
-  background: #fff;
-  padding: 40px;
-  border-radius: 18px;
-  overflow-x: scroll;
-  margin: 0 15px;
+
+.f {
+  color: #143987;
+  font-weight: 600;
 }
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
+
 .b {
   font-weight: bold;
   color: #5c5c5c;
 }
-tr {
-}
+
 td {
-  min-width: 75px;
-  height: 55px;
-  min-height: 55px;
-  vertical-align: middle;
   border: 1px solid #acacac;
+  vertical-align: middle;
   text-align: center;
-  /* display: flex;
-  align-items: center;
-  justify-content: center; */
 }
 
 .inv {
   border: none;
 }
 
-.l-none {
+.table__fio {
   border-left: none;
   white-space: nowrap;
-  padding: 15px 35px 15px 10px;
+  padding: 10px 35px 10px 10px;
+  position: sticky;
+  left: -20px;
+  background: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
 }
 .td_bad {
   background: rgba(255, 80, 80, 0.43) !important;
@@ -663,25 +658,79 @@ td {
 }
 /*  */
 /*  */
-/*  */
-.title {
-  color: #143987;
-  font-size: 48px;
-  margin-left: 30px;
+.content {
+  background: #fff;
+  padding: 40px 20px;
+  border-radius: 18px;
+  overflow-x: auto;
+  margin: 0 15px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+  margin-bottom: 35px;
 }
+
+.special-main {
+  background: #f3f6fb;
+  padding-top: 65px;
+  height: calc(100vh - 140px);
+  padding-bottom: 25px;
+}
+
 .top {
   display: flex;
   align-items: center;
-  gap: 30px;
+  flex-wrap: wrap;
+  gap: 10px 30px;
   margin-bottom: 65px;
 }
 .course-select {
-  min-width: 350px;
+  min-width: 200px;
   background: #fefefe;
   border-radius: 7px;
   border: 1px solid #5c5c5c;
   padding: 10px 15px;
-
   /*  */
+}
+.mark:nth-child(2n) {
+  background: #f3f6fb;
+}
+
+.mark,
+.table__date {
+  width: 54px;
+  height: 54px;
+  min-width: 54px;
+  font-size: 18px;
+}
+
+.table__head {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  border-bottom: 1px solid #000;
+}
+.table__mark-input {
+  background: none;
+  border: none;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 768px) {
+  .mark,
+  .table__date {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    font-size: 14px;
+  }
+
+  .table__mark-input {
+    font-size: 14px;
+  }
+  .table__fio {
+    padding: 0;
+    padding-right: 15px;
+  }
 }
 </style>

@@ -1,61 +1,57 @@
 <template>
-  <header class="header">
+  <HeaderAuth />
+
+  <main class="main-auth">
     <div class="container">
-      <div class="header__inner">
-        <img class="header__logoZh" src="/logoZh.png" alt="" />
-        <img class="header__logo" src="/logo.png" alt="" />
+      <h1 class="title">Вход</h1>
+      <input
+        type="email"
+        placeholder="Введите эл. почту"
+        class="main-auth__input" />
+      <input
+        type="password"
+        placeholder="Введите пароль"
+        class="main-auth__input" />
+
+      <div class="main-auth__bottom">
+        <label class="custom-checkbox">
+          <input type="checkbox" name="remember" id="remember" />
+          <span> Запомнить меня</span>
+        </label>
+
+        <a href="#" class="main-auth__forgot">Забыли пароль?</a>
       </div>
+      <RouterLink to="/perfomanceT" class="main-auth__btn-auth">
+        Войти
+      </RouterLink>
+
+      <RouterLink to="/reg" class="main-auth__how-reg">
+        Как зарегестрироваться?
+      </RouterLink>
     </div>
-  </header>
-
-  <main>
-    <h1 class="title">Вход</h1>
-    <input type="email" placeholder="Введите эл. почту" class="input" />
-    <input type="password" placeholder="Введите пароль" class="input input_2" />
-
-    <div class="bottom">
-      <label class="custom-checkbox">
-        <input type="checkbox" name="remember" id="remember" />
-        <span> Запомнить меня</span>
-      </label>
-
-      <a href="#" class="forgot">Забыли пароль?</a>
-    </div>
-    <button class="go">Войти</button>
-
-    <a href="#" class="how-reg">Как зарегестрироваться</a>
   </main>
 
   <footer></footer>
 </template>
 
-<style scoped>
-.header__inner {
-  margin-top: 75px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+<script>
+import { RouterLink } from 'vue-router'
+import HeaderAuth from './HeaderAuth.vue'
+export default {
+  components: { HeaderAuth },
 }
-.header__logoZh {
-  height: 95px;
-}
-.header__logo {
-  height: 70px;
-}
+</script>
 
+<style>
 /*  */
 
-main {
+.main-auth {
   flex: 1 1 0;
-  /* display: flex;
-  align-items: center; */
   display: flex;
   align-items: center;
   align-content: center;
-
   flex-direction: column;
   justify-content: center;
-
   margin: 0 auto;
   max-width: 500px;
   width: 100%;
@@ -63,52 +59,53 @@ main {
 }
 
 .title {
-  font-size: 36px;
-  margin-bottom: 44px;
   display: inline-block;
   align-self: start;
 }
-.input {
+.main-auth__input {
   height: 65px;
   width: 100%;
-  border-radius: 8px;
+  border-radius: 10px;
   border: 1px solid #acacac;
-  font-size: 28px;
-  margin-bottom: 48px;
-  padding: 20px 35px;
+  font-size: var(--font-size-h6);
+  margin-bottom: 20px;
+  padding: 10px 20px;
 }
 
-.input_2 {
-  margin-bottom: 40px;
-}
-
-.bottom {
+.main-auth__bottom {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  margin-bottom: 33px;
+  margin-bottom: 25px;
 }
-.forgot {
+.main-auth__forgot {
   color: #acacac;
 }
-.go {
+.main-auth__btn-auth {
   background: #376ad5;
+  display: block;
+  text-align: center;
   color: white;
-  padding: 23px;
+  padding: 20px;
   width: 100%;
   border-radius: 52px;
-  font-size: 30px;
   font-weight: bold;
-  margin-bottom: 50px;
-  margin-bottom: 35px;
+  margin-bottom: 15px;
   border: none;
 }
-.how-reg {
+.main-auth__how-reg {
   display: block;
+  color: gray;
 }
-
-footer {
+.mail-link {
+  margin-top: 15px;
+  display: block;
+  align-self: flex-start;
+  color: #143987;
+}
+/*  */
+.footer-bottom-line {
   background: #143987;
   height: 60px;
 }
