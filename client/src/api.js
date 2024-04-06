@@ -1,7 +1,9 @@
 import axios from 'axios'
 
 const server =
-  process.env.NODE_ENV === 'production' ? '' : 'http://127.0.0.1:3000'
+  process.env.NODE_ENV === 'production'
+    ? 'https://elzh.vercel.app'
+    : 'http://127.0.0.1:3000'
 const token = localStorage.getItem('authToken')
 
 const instance = axios.create({

@@ -1,0 +1,14 @@
+{
+  "name": "elzh",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "cd ./client && npm run build && cd ../server && npx cross-env NODE_ENV=production nodemon index.js "
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cross-env": "^7.0.3"
+  }
+}

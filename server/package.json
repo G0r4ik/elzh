@@ -1,5 +1,8 @@
 {
   "type": "module",
+  "scripts": {
+    "build": "cd ./client && npm run build && cd ../server && npx nodemon index.js"
+  },
   "dependencies": {
     "@fastify/auth": "^4.6.1",
     "@fastify/cors": "^9.0.1",
