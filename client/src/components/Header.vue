@@ -14,7 +14,9 @@
               </RouterLink>
             </li>
             <li class="header__item">
-              <RouterLink active-class="header__item_active" to="/perfomanceT">
+              <RouterLink
+                active-class="header__item_active"
+                :to="role === 'student' ? 'perfomanceS' : '/perfomanceT'">
                 Успеваемость
               </RouterLink>
             </li>
@@ -28,7 +30,7 @@
 
         <div class="header__user">
           <img src="/student.png" alt="/student.png" class="user__img" />
-          <div class="user__name">Анатолий</div>
+          <div class="user__name">{{ user.firstName }}</div>
           <svg
             class="user-go-settings"
             width="29"
@@ -47,7 +49,27 @@
     </div>
   </header>
 </template>
+<script>
+import { useUserStore } from '../store.js'
 
+export default {
+  data() {
+    return {
+      role: null,
+    }
+  },
+
+  computed: {
+    user() {
+      return useUserStore().user
+    },
+  },
+  mounted() {
+    const role = localStorage.getItem('role')
+    this.role = role
+  },
+}
+</script>
 <style scoped>
 header {
   background: #fefefe;
@@ -81,8 +103,8 @@ header {
   width: 60px;
 }
 .user__name {
-  margin-right: 20px;
-  margin-left: 20px;
+  margin-right: 10px;
+  margin-left: 15px;
 }
 .header__item_active {
   padding-bottom: 10px;

@@ -4,26 +4,30 @@
   <main class="main-auth">
     <div class="container">
       <h1 class="title">Вход</h1>
+      <ErrorNote
+        :bgColor="'rgba(148, 12, 12, 0.85)'"
+        :text="textError"
+        v-if="textError" />
       <input
         type="email"
         placeholder="Введите эл. почту"
-        class="main-auth__input" />
+        class="main-auth__input"
+        v-model="email" />
       <input
         type="password"
         placeholder="Введите пароль"
-        class="main-auth__input" />
+        class="main-auth__input"
+        v-model="password" />
 
       <div class="main-auth__bottom">
         <label class="custom-checkbox">
           <input type="checkbox" name="remember" id="remember" />
-          <span> Запомнить меня</span>
+          <span>Запомнить меня</span>
         </label>
 
         <a href="#" class="main-auth__forgot">Забыли пароль?</a>
       </div>
-      <RouterLink to="/perfomanceT" class="main-auth__btn-auth">
-        Войти
-      </RouterLink>
+      <button class="main-auth__btn-auth" @click="sign">Войти</button>
 
       <RouterLink to="/reg" class="main-auth__how-reg">
         Как зарегестрироваться?
@@ -35,16 +39,43 @@
 </template>
 
 <script>
-import { RouterLink } from 'vue-router'
 import HeaderAuth from './HeaderAuth.vue'
+import api from '../api.js'
+import ErrorNote from './ErrorNote.vue'
+
 export default {
-  components: { HeaderAuth },
+  components: { HeaderAuth, ErrorNote },
+
+  data() {
+    return {
+      email: '',
+      password: '',
+      textError: null,
+    }
+  },
+
+  mounted() {
+    localStorage.removeItem('role')
+    localStorage.removeItem('token')
+  },
+
+  methods: {
+    async sign() {
+      const { password, email } = this
+      try {
+        const token = await api.post('/login', { password, email })
+        localStorage.setItem('token', token.data.token)
+        localStorage.setItem('role', token.data.role)
+        this.$router.push('/perfomanseT')
+      } catch (error) {
+        this.textError = error.response.data.message
+      }
+    },
+  },
 }
 </script>
 
 <style>
-/*  */
-
 .main-auth {
   flex: 1 1 0;
   display: flex;
@@ -61,6 +92,7 @@ export default {
 .title {
   display: inline-block;
   align-self: start;
+  margin-bottom: 20px;
 }
 .main-auth__input {
   height: 65px;

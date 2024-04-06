@@ -13,7 +13,7 @@
     </div>
   </main>
 
-  <footer class="footer-bottom-line"></footer>
+  <footer class="footer-bottom-line" />
 </template>
 
 <script>
