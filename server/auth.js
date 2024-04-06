@@ -25,3 +25,14 @@ export async function checkToken(request, reply) {
 
   request.user = decodedToken
 }
+
+export async function isValidToken(request, reply) {
+  try {
+    const { token } = request.body
+
+    const isValid = !!(await validateToken(token))
+    return { isValid }
+  } catch (error) {
+    console.log(error)
+  }
+}

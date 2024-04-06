@@ -1,7 +1,12 @@
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import './db.js'
-import { checkToken, generateToken, validateToken } from './auth.js'
+import {
+  checkToken,
+  generateToken,
+  isValidToken,
+  validateToken,
+} from './auth.js'
 import {
   Course,
   CourseLesson,
@@ -11,7 +16,9 @@ import {
   Trimester,
   User,
 } from './db.js'
+
 import jwt from 'jsonwebtoken'
+import { createStudent, createTeacher } from './admin.js'
 
 const fastify = Fastify({ logger: false })
 await fastify.register(cors, { origin: '*' })
@@ -26,45 +33,25 @@ fastify.get('/', {
 })
 
 fastify.post('/login', async (request, reply) => {
-  const { email, password } = request.body
-  const student = await User.findOne({ where: { email, password } })
-  const teacher = await Teacher.findOne({ where: { email, password } })
-
-  if (!student && !teacher) {
-    return reply.status(401).send({ message: 'Invalid username or password' })
-  }
-  const user = student || teacher
-  const token = await generateToken(user)
-  reply.send({ token, role: user.role })
-})
-
-fastify.post('/checkToken', async (request, reply) => {
-  const { token } = request.body
-
-  const isValid = !!(await validateToken(token))
-  return { isValid }
-})
-
-fastify.post('/students', async (request, reply) => {
   try {
-    const { user } = request.body
-    const createdUser = await User.create(user)
-    return createdUser
+    const { email, password } = request.body
+    const student = await User.findOne({ where: { email, password } })
+    const teacher = await Teacher.findOne({ where: { email, password } })
+
+    if (!student && !teacher) {
+      return reply.status(401).send({ message: 'Invalid username or password' })
+    }
+    const user = student || teacher
+    const token = await generateToken(user)
+    reply.send({ token, role: user.role, user })
   } catch (error) {
     console.log(error)
   }
 })
 
-fastify.post('/teachers', async (request, reply) => {
-  try {
-    const { user } = request.body
-    const createdUser = await User.create(user)
-
-    return createdUser
-  } catch (error) {
-    console.log(error)
-  }
-})
+fastify.post('/checkToken', isValidToken)
+fastify.post('/student', createStudent)
+fastify.post('/teacher', createTeacher)
 
 fastify.post('/mark', async (request, reply) => {
   try {
@@ -83,7 +70,6 @@ fastify.post('/mark', async (request, reply) => {
     )
 
     if (existMark) {
-      console.log(1)
     }
     const cmark = await Mark.create({
       idUser: idStudent,
