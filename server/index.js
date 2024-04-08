@@ -61,6 +61,7 @@ fastify.get('/studentsByT', {
 
 try {
   await fastify.listen({ port: process.env.PORT || 3000 })
+  console.log(process.env.PORT)
 } catch (err) {
   fastify.log.error(err)
   process.exit(1)
