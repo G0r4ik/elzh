@@ -8,12 +8,11 @@ import PagePerformanceT from './components/PagePerformanceT.vue'
 import PageCalendar from './components/PageCalendar.vue'
 import Admin from './components/Admin.vue'
 import api from './api'
-import { useUserStore } from './store.js'
 
 const priv = {
   admin: ['/admin'],
   student: ['/perfomanceS', '/calendar'],
-  teacher: ['/perfomanceT'],
+  teacher: ['/perfomanceT', '/calendar'],
 }
 
 const routes = [
@@ -32,7 +31,6 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  console.log(to.path)
   if (to.path !== '/auth' && to.path !== '/reg') {
     await checkAndRedirect(to, from, next)
   } else {

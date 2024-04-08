@@ -19,3 +19,5 @@ export async function createTeacher(request, reply) {
     console.log(error)
   }
 }
+
+export default { createTeacher, createStudent }

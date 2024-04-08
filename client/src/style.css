@@ -34,6 +34,7 @@
 
 body {
   background: var(--bg);
+  font-family: sans-serif;
 }
 
 a {
@@ -57,6 +58,11 @@ a {
 .title {
   color: #143987;
   font-size: var(--font-size-h3);
+}
+
+.footer-bottom-line {
+  background: #143987;
+  height: 60px;
 }
 
 button {

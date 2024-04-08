@@ -6,7 +6,7 @@ export const sequelize = new Sequelize(
   { logging: false }
 )
 
-export const Course = sequelize.define(
+const Course = sequelize.define(
   'Course',
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
@@ -16,7 +16,7 @@ export const Course = sequelize.define(
   { timestamps: false }
 )
 
-export const User = sequelize.define(
+const User = sequelize.define(
   'User',
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
@@ -38,7 +38,7 @@ export const User = sequelize.define(
   { timestamps: false }
 )
 
-export const Teacher = sequelize.define(
+const Teacher = sequelize.define(
   'Teacher',
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
@@ -55,7 +55,7 @@ export const Teacher = sequelize.define(
   { timestamps: false }
 )
 
-export const Lesson = sequelize.define(
+const Lesson = sequelize.define(
   'Lesson',
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
@@ -68,7 +68,7 @@ export const Lesson = sequelize.define(
   { timestamps: false }
 )
 
-export const Trimester = sequelize.define(
+const Trimester = sequelize.define(
   'Trimester',
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
@@ -79,7 +79,7 @@ export const Trimester = sequelize.define(
   { timestamps: false }
 )
 
-export const Mark = sequelize.define(
+const Mark = sequelize.define(
   'Mark',
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
@@ -98,7 +98,7 @@ export const Mark = sequelize.define(
   { timestamps: false }
 )
 
-export const CourseLesson = sequelize.define(
+const CourseLesson = sequelize.define(
   'CourseLesson',
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
@@ -118,7 +118,8 @@ export const CourseLesson = sequelize.define(
   { timestamps: false }
 )
 
-export const Schedule = sequelize.define(
+// Не используется
+const Schedule = sequelize.define(
   'Schedule',
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
@@ -157,5 +158,16 @@ Mark.belongsTo(CourseLesson, { foreignKey: 'id' })
 Lesson.belongsTo(User, { foreignKey: 'id' })
 Lesson.belongsTo(CourseLesson, { foreignKey: 'id' })
 Lesson.belongsTo(Trimester, { foreignKey: 'id' })
+
+export const models = {
+  Course,
+  User,
+  Teacher,
+  Lesson,
+  Trimester,
+  Mark,
+  CourseLesson,
+  Schedule,
+}
 
 // sequelize.sync({ alter: true })

@@ -25,7 +25,9 @@
           <span>Запомнить меня</span>
         </label>
 
-        <a href="#" class="main-auth__forgot">Забыли пароль?</a>
+        <RouterLink to="/reg" class="main-auth__forgot">
+          Забыли пароль?
+        </RouterLink>
       </div>
       <button class="main-auth__btn-auth" @click="sign">Войти</button>
 
@@ -35,13 +37,14 @@
     </div>
   </main>
 
-  <footer></footer>
+  <footer class="footer-bottom-line"></footer>
 </template>
 
 <script>
 import HeaderAuth from './HeaderAuth.vue'
 import api from '../api.js'
 import ErrorNote from './ErrorNote.vue'
+import { useUserStore } from '../store.js'
 
 export default {
   components: { HeaderAuth, ErrorNote },
@@ -63,11 +66,13 @@ export default {
     async sign() {
       const { password, email } = this
       try {
-        const token = await api.post('/login', { password, email })
-        localStorage.setItem('token', token.data.token)
-        localStorage.setItem('role', token.data.role)
+        const res = await api.post('/login', { password, email })
+        localStorage.setItem('token', res.data.token)
+        localStorage.setItem('role', res.data.role)
+        useUserStore().user = res.data.user
         this.$router.push('/perfomanseT')
       } catch (error) {
+        console.log(error)
         this.textError = error.response.data.message
       }
     },
@@ -135,10 +140,5 @@ export default {
   display: block;
   align-self: flex-start;
   color: #143987;
-}
-/*  */
-.footer-bottom-line {
-  background: #143987;
-  height: 60px;
 }
 </style>

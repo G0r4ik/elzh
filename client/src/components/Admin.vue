@@ -96,9 +96,8 @@ export default {
     async createUser() {
       try {
         const response = await (this.user.role === 'teacher'
-          ? api.post('/teachers', { user: this.user })
-          : api.post('/students', { user: this.user }))
-        console.log('User created successfully:', response.data)
+          ? api.post('/teacher', { user: this.user })
+          : api.post('/student', { user: this.user }))
         this.errorText = 'Создано успешно!'
       } catch (error) {
         console.error('Error creating user:', error)

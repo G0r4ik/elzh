@@ -1,29 +1,17 @@
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import './db.js'
-import {
-  checkToken,
-  generateToken,
-  isValidToken,
-  validateToken,
-} from './auth.js'
-import {
-  Course,
-  CourseLesson,
-  Lesson,
-  Mark,
-  Teacher,
-  Trimester,
-  User,
-} from './db.js'
 
-import jwt from 'jsonwebtoken'
-import { createStudent, createTeacher } from './admin.js'
+import admin from './features/admin.js'
+import auth from './features/auth.js'
+import teacher from './features/teacher.js'
+import shared from './features/shared.js'
+import student from './features/student.js'
 
 const fastify = Fastify({ logger: false })
 await fastify.register(cors, { origin: '*' })
 
-fastify.decorate('checkAuth', checkToken)
+fastify.decorate('checkAuth', auth.checkTokenAndSetUser)
 
 fastify.get('/', {
   preHandler: [fastify.checkAuth],
@@ -32,151 +20,43 @@ fastify.get('/', {
   },
 })
 
-fastify.post('/login', async (request, reply) => {
-  try {
-    const { email, password } = request.body
-    const student = await User.findOne({ where: { email, password } })
-    const teacher = await Teacher.findOne({ where: { email, password } })
-
-    if (!student && !teacher) {
-      return reply.status(401).send({ message: 'Invalid username or password' })
-    }
-    const user = student || teacher
-    const token = await generateToken(user)
-    reply.send({ token, role: user.role, user })
-  } catch (error) {
-    console.log(error)
-  }
+fastify.get('/lessonsStudent/:idTrimester', {
+  preHandler: [fastify.checkAuth],
+  handler: student.getStudentLessons,
+})
+fastify.get('/trimester', {
+  preHandler: [fastify.checkAuth],
+  handler: shared.getTrimesters,
 })
 
-fastify.post('/checkToken', isValidToken)
-fastify.post('/student', createStudent)
-fastify.post('/teacher', createTeacher)
+fastify.post('/login', auth.login)
+fastify.post('/checkToken', auth.isValidToken)
+fastify.post('/getUserByToken', auth.getUserByToken)
 
-fastify.post('/mark', async (request, reply) => {
-  try {
-    const { idStudent, date, idTrimester, mark, idLesson } = request.body
-    const existMark = await Mark.findOne({
-      where: { date: String(date), idTrimester, idLesson, idUser: idStudent },
-    })
-
-    // const existMark = await Mark.findOne({ where: { id: user.id } })
-
-    Mark.update(
-      { mark: String(mark) },
-      {
-        where: { date: String(date), idTrimester, idLesson, idUser: idStudent },
-      }
-    )
-
-    if (existMark) {
-    }
-    const cmark = await Mark.create({
-      idUser: idStudent,
-      date,
-      idTrimester,
-      mark,
-      idLesson,
-    })
-
-    return cmark
-  } catch (error) {
-    console.log(error)
-  }
+fastify.post('/student', {
+  preHandler: [fastify.checkAuth],
+  handler: admin.createStudent,
+})
+fastify.post('/teacher', {
+  preHandler: [fastify.checkAuth],
+  handler: admin.createTeacher,
 })
 
-fastify.get('/courses', async (request, reply) => {
-  try {
-    const courses = await Course.findAll()
-
-    return courses
-  } catch (error) {
-    console.log(error)
-  }
+fastify.post('/mark', {
+  preHandler: [fastify.checkAuth],
+  handler: teacher.setMark,
 })
-
-fastify.get('/lessons/:idTeacher', async (request, reply) => {
-  try {
-    const { idTeacher } = request.params
-    const lessons = await Lesson.findAll({ where: { idTeacher: idTeacher } })
-
-    return lessons
-  } catch (error) {
-    console.log(error)
-  }
+fastify.get('/courses', {
+  preHandler: [fastify.checkAuth],
+  handler: teacher.getCourses,
 })
-
-fastify.get(
-  '/lessonsStudent/:idUser/:idTrimester/:idCourse',
-  async (request, reply) => {
-    try {
-      const { idUser, idCourse, idTrimester } = request.params
-      const lessons = await CourseLesson.findAll({
-        where: { idCourse: +idCourse },
-        include: [
-          { model: Lesson },
-          { model: Trimester },
-          // {
-          //   model: Mark,
-          //   where: { idUser, idTrimester },
-          // },
-        ],
-      })
-
-      const marks = await Mark.findAll({
-        where: { idUser, idTrimester },
-      })
-
-      return { lessons, marks }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-)
-
-fastify.get('/trimester', async (request, reply) => {
-  try {
-    const trimester = await Trimester.findAll()
-
-    return trimester
-  } catch (error) {
-    console.log(error)
-  }
+fastify.get('/lessons', {
+  preHandler: [fastify.checkAuth],
+  handler: teacher.getLessons,
 })
-
-fastify.get('/course/:id/:idTrimester/:idLesson', async (request, reply) => {
-  try {
-    const { id, idTrimester, idLesson } = request.params
-    const users = JSON.parse(
-      JSON.stringify(await User.findAll({ where: { idCourse: id } }))
-    )
-
-    for (let i = 0; i < users.length; i++) {
-      const marks = await Mark.findAll({
-        where: { idUser: users[i].id, idTrimester, idLesson },
-      })
-      users[i].marks = marks
-    }
-    return users
-  } catch (error) {
-    console.log(error)
-  }
-})
-
-fastify.post('/getUserByToken', async (request, reply) => {
-  try {
-    const { token } = request.body
-    const user = await jwt.decode(token)
-    if (user.role === 'student') {
-      const dbUser = await User.findOne({ where: { id: user.id } })
-      return dbUser
-    } else {
-      const dbUser = await Teacher.findOne({ where: { id: user.id } })
-      return dbUser
-    }
-  } catch (error) {
-    console.log(error)
-  }
+fastify.get('/studentsByT', {
+  preHandler: [fastify.checkAuth],
+  handler: teacher.getStudents,
 })
 
 try {

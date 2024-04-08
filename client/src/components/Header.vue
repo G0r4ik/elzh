@@ -29,7 +29,7 @@
         </nav>
 
         <div class="header__user">
-          <img src="/student.png" alt="/student.png" class="user__img" />
+          <img src="/user.png" alt="/user.png" class="user__img" />
           <div class="user__name">{{ user.firstName }}</div>
           <svg
             class="user-go-settings"
@@ -93,11 +93,11 @@ header {
 }
 .header__item {
   list-style: none;
-  /* font-size: 30px; */
 }
 .header__user {
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
 .user__img {
   width: 60px;

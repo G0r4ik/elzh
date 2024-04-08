@@ -61,15 +61,15 @@
                 type="text"
                 :value="getFixme(student, index)"
                 @change="
-                  event => setMark(event.target.value, student.id, index + 1)
+                  event =>
+                    setMark(event.target.value, student.id, index + 1, event)
                 " />
             </td>
             <td>
               {{
                 daysOfMonth.length -
                 student.marks.filter(m => m.mark === 'н').length
-              }}
-              /
+              }}(?) /
               {{ daysOfMonth.length }}
             </td>
           </tr>
@@ -107,9 +107,8 @@ export default {
     this.courses = (await api.get('/courses')).data
     this.currentCourse = this.courses.at(-1)
 
-    this.lessons = (await api.get(`/lessons/${useUserStore().user.id}`)).data
+    this.lessons = (await api.get(`/lessons`)).data
     this.currentLesson = this.lessons.at(-1)
-    console.log(this.lessons)
   },
 
   computed: {
@@ -126,9 +125,19 @@ export default {
     getFixme(student, index) {
       return student.marks.find(mark => +mark.date === index + 1)?.mark
     },
-    async setMark(mark, idStudent, date) {
-      console.log(idStudent, date, this.trimester, mark)
-      const res = await api.post(`/mark`, {
+    async setMark(mark, idStudent, date, event) {
+      event.target.offsetParent.classList.add(
+        mark === 'б'
+          ? 'td_ok'
+          : mark == '5'
+          ? 'td_good'
+          : mark == '3'
+          ? 'td_med'
+          : mark == '2' || mark == 'н'
+          ? 'td_bad'
+          : ''
+      )
+      await api.post(`/mark`, {
         idStudent,
         date,
         idTrimester: this.currentTrimester.id,
@@ -140,23 +149,36 @@ export default {
   watch: {
     async currentCourse(val) {
       if (!this.currentTrimester || !this.currentLesson) return
-      const res = await api.get(
-        `/course/${this.currentCourse.id}/${this.currentTrimester.id}/${this.currentLesson.id}`
-      )
+      const res = await api.get(`/studentsByT`, {
+        params: {
+          idCourse: this.currentCourse.id,
+          idTrimester: this.currentTrimester.id,
+          idLesson: this.currentLesson.id,
+        },
+      })
+
       this.students = res.data
     },
     async currentTrimester(val) {
       if (!this.currentCourse || !this.currentLesson) return
-      const res = await api.get(
-        `/course/${this.currentCourse.id}/${this.currentTrimester.id}/${this.currentLesson.id}`
-      )
+      const res = await api.get(`/studentsByT`, {
+        params: {
+          idCourse: this.currentCourse.id,
+          idTrimester: this.currentTrimester.id,
+          idLesson: this.currentLesson.id,
+        },
+      })
       this.students = res.data
     },
     async currentLesson(val) {
       if (!this.currentCourse || !this.currentTrimester) return
-      const res = await api.get(
-        `/course/${this.currentCourse.id}/${this.currentTrimester.id}/${this.currentLesson.id}`
-      )
+      const res = await api.get(`/studentsByT`, {
+        params: {
+          idCourse: this.currentCourse.id,
+          idTrimester: this.currentTrimester.id,
+          idLesson: this.currentLesson.id,
+        },
+      })
       this.students = res.data
     },
   },

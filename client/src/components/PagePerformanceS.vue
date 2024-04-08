@@ -43,11 +43,8 @@
             {{ getFixme(lesson.id, index) }}
           </td>
           <td>
-            {{ daysOfMonth.length - 0 }}
-            /
+            {{ daysOfMonth.length - 0 }}(?) /
             {{ daysOfMonth.length }}
-
-            <!-- // student.marks.filter(m => m.mark === 'н').length / -->
           </td>
         </tr>
       </table>
@@ -74,13 +71,9 @@ export default {
     this.trimester = (await api.get('/trimester')).data
     this.currentTrimester = this.trimester.at(-1)
 
-    const { lessons, marks } = (
-      await api.get(
-        `/lessonsStudent/${useUserStore().user.id}/${
-          this.currentTrimester.id
-        }/${useUserStore().user.idCourse}`
-      )
-    ).data
+    const idTrimester = this.currentTrimester.id
+    const { lessons, marks } = (await api.get(`/lessonsStudent/${idTrimester}`))
+      .data
     this.lessons = lessons
     this.marks = marks
   },
@@ -97,13 +90,9 @@ export default {
 
   watch: {
     async currentTrimester() {
-      console.log(useUserStore().user)
+      const idTrimester = this.currentTrimester.id
       const { lessons, marks } = (
-        await api.get(
-          `/lessonsStudent/${useUserStore().user.id}/${
-            this.currentTrimester.id
-          }/${useUserStore().user.idCourse}`
-        )
+        await api.get(`/lessonsStudent/${idTrimester}`)
       ).data
       this.lessons = lessons
       this.marks = marks
